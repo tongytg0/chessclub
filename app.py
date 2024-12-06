@@ -2,6 +2,7 @@ import sqlite3
 from datetime import datetime
 from flask import Flask, render_template, request, redirect, url_for, jsonify
 from flask_cors import CORS
+import os
 
 app = Flask(__name__)
 CORS(app)
@@ -107,8 +108,7 @@ def delete_player():
     return redirect(url_for('index'))
 
 if __name__ == '__main__':
-    # Initialize the database when the application starts
     initialize_database()
+    port = int(os.environ.get('PORT', 5000))  # Default to 5000 if PORT is not set
+    app.run(debug=True, host='0.0.0.0', port=port)
 
-    # Run the Flask application
-    app.run(debug=True, port=5001)
