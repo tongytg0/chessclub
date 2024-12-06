@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Chess Club Elo Ranking System</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/tailwindcss/2.2.19/tailwind.min.css" rel="stylesheet">
+</head>
+<body class="bg-gray-100 p-6">
+    <div class="container mx-auto max-w-6xl">
+        <h1 class="text-3xl font-bold mb-6 text-center text-gray-800">Chess Club Elo Ranking System</h1>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <!-- Add Player Section -->
+            <div class="bg-white p-6 rounded-lg shadow-md">
+                <h2 class="text-xl font-semibold mb-4 text-gray-700">Add Player</h2>
+                <form action="/add_player" method="post" class="space-y-4">
+                    <input type="text" name="name" placeholder="Player Name" required
+                           class="w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
+                    <input type="number" name="initial_elo" placeholder="Initial Elo Rating (default 1200)"
+                           min="0" value="1200"
+                           class="w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
+                    <button type="submit"
+                            class="w-full bg-blue-500 text-white py-2 rounded-md hover:bg-blue-600 transition duration-300">
+                        Add Player
+                    </button>
+                </form>
+            </div>
+
+            <!-- Record Match Section -->
+            <div class="bg-white p-6 rounded-lg shadow-md">
+                <h2 class="text-xl font-semibold mb-4 text-gray-700">Record Match</h2>
+                <form action="/record_match" method="post" class="space-y-4">
+                    <select name="winner" required
+                            class="w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-green-500">
+                        <option value="">Select Winner</option>
+                        {% for player in players %}
+                        <option value="{{ player.name }}">{{ player.name }} (Elo: {{ player.elo }})</option>
+                        {% endfor %}
+                    </select>
+                    <select name="loser" required
+                            class="w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-green-500">
+                        <option value="">Select Loser</option>
+                        {% for player in players %}
+                        <option value="{{ player.name }}">{{ player.name }} (Elo: {{ player.elo }})</option>
+                        {% endfor %}
+                    </select>
+                    <button type="submit"
+                            class="w-full bg-green-500 text-white py-2 rounded-md hover:bg-green-600 transition duration-300">
+                        Record Match
+                    </button>
+                </form>
+            </div>
+        </div>
+
+        <!-- Player Rankings -->
+        <div class="mt-6 bg-white p-6 rounded-lg shadow-md">
+            <h2 class="text-xl font-semibold mb-4 text-gray-700">Player Rankings</h2>
+            <table class="w-full">
+                <thead class="bg-gray-200">
+                    <tr>
+                        <th class="py-2 px-4">Rank</th>
+                        <th class="py-2 px-4">Name</th>
+                        <th class="py-2 px-4">Elo Rating</th>
+                        <th class="py-2 px-4">Wins</th>
+                        <th class="py-2 px-4">Losses</th>
+                        <th class="py-2 px-4">Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for player in players %}
+                    <tr class="border-b hover:bg-gray-50">
+                        <td class="text-center py-2 px-4">{{ loop.index }}</td>
+                        <td class="text-center py-2 px-4">{{ player.name }}</td>
+                        <td class="text-center py-2 px-4">{{ player.elo }}</td>
+                        <td class="text-center py-2 px-4">{{ player.wins }}</td>
+                        <td class="text-center py-2 px-4">{{ player.losses }}</td>
+                        <td class="text-center py-2 px-4">
+                            <form action="/delete_player" method="post" class="inline">
+                                <input type="hidden" name="name" value="{{ player.name }}">
+                                <button type="submit" class="text-red-500 hover:text-red-700 transition duration-300">
+                                    Delete
+                                </button>
+                            </form>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+
+        <!-- Recent Matches -->
+        <div class="mt-6 bg-white p-6 rounded-lg shadow-md">
+            <h2 class="text-xl font-semibold mb-4 text-gray-700">Recent Matches</h2>
+            <table class="w-full">
+                <thead class="bg-gray-200">
+                    <tr>
+                        <th class="py-2 px-4">Winner</th>
+                        <th class="py-2 px-4">Loser</th>
+                        <th class="py-2 px-4">Date</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for match in matches %}
+                    <tr class="border-b hover:bg-gray-50">
+                        <td class="text-center py-2 px-4">{{ match.winner }}</td>
+                        <td class="text-center py-2 px-4">{{ match.loser }}</td>
+                        <td class="text-center py-2 px-4">{{ match.match_date }}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</body>
+</html>
